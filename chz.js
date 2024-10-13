@@ -1,17 +1,6 @@
 const { ethers } = require("ethers");
 
 let provider, signer;
-
-async function requestAccount() {
-    if (typeof window.ethereum !== 'undefined') {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = provider.getSigner();
-    } else {
-        alert("Please install MetaMask!");
-    }
-}
-
 const auctionAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138"; // Podaj właściwy adres kontraktu
 const auctionABI = [
     {
