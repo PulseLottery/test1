@@ -1,7 +1,8 @@
 const { ethers } = require("ethers");
 
-let provider;
-let signer; // Upewnij się, że ta zmienna jest zadeklarowana
+// MetaMask setup
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
 const auctionAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138"; // Podaj właściwy adres kontraktu
 const auctionABI = [
 	{
