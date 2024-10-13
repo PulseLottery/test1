@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aukcja</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
-    <script src="chz.js" defer></script> <!-- Upewnij się, że chz.js jest załadowany po ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script> <!-- CDN dla ethers.js -->
+    <script src="chz.js" defer></script> <!-- Ładowanie chz.js po ethers.js -->
 </head>
 <body>
-    <!-- Twoje elementy HTML -->
+    <h1>Aukcja</h1>
+    <button id="connectButton">Połącz z MetaMask</button>
+    <button id="placeBidButton">Złóż ofertę</button>
+    <button id="withdrawButton">Wypłać środki</button>
+    <button id="endAuctionButton">Zakończ aukcję</button>
+
+    <script>
+        document.getElementById('connectButton').onclick = requestAccount;
+        document.getElementById('placeBidButton').onclick = placeBid;
+        document.getElementById('withdrawButton').onclick = withdrawFunds;
+        document.getElementById('endAuctionButton').onclick = endAuction;
+    </script>
 </body>
 </html>
