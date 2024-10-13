@@ -1,249 +1,44 @@
 // MetaMask setup
-let provider; // Deklaracja globalna
-let signer;   // Deklaracja globalna
-
+let provider;
+let signer;
 const auctionAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138"; // Podaj właściwy adres kontraktu
-const auctionABI = [
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "winner",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "timeLeft",
-                "type": "uint256"
-            }
-        ],
-        "name": "AuctionEnded",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "bid",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "endAuction",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "bidder",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "NewBid",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "withdrawFunds",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "auctionActive",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "auctionDuration",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "auctionEndTime",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "BID_AMOUNT",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "currentBid",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getTimeLeft",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "highestBidder",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "REWARD_AMOUNT",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalBids",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalCollected",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    }
-];
 
 async function init() {
     if (window.ethereum) {
         provider = new ethers.providers.Web3Provider(window.ethereum);
         console.log("Provider initialized");
     } else {
-        alert("Proszę zainstalować Metamask!");
+        alert("Proszę zainstalować MetaMask!");
     }
 }
 
 async function requestAccount() {
-    if (!window.ethereum) {
+    if (typeof window.ethereum === 'undefined') {
         alert("Proszę zainstalować MetaMask!");
         return;
     }
-    
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    signer = provider.getSigner();  // Ustaw signer po połączeniu
-    console.log("Account connected:", accounts[0]);
+
+    // Połączenie z MetaMask
+    try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        signer = provider.getSigner();  // Ustaw signer po połączeniu
+        console.log("Account connected:", accounts[0]);
+    } catch (error) {
+        console.error("Error connecting to MetaMask:", error);
+    }
 }
 
-// Funkcje bid, withdraw i endAuction
+// Funkcje bid, withdraw i endAuction muszą być poprawnie zdefiniowane
 async function placeBid() {
     console.log("placeBid function called");
     if (!signer) {
         console.error("Signer is not initialized. Please connect to MetaMask.");
+        return;
+    }
+    
+    if (!ethers.utils.isAddress(auctionAddress)) {
+        console.error("Invalid auction address.");
+        alert("Nieprawidłowy adres aukcji.");
         return;
     }
 
@@ -254,9 +49,11 @@ async function placeBid() {
         console.log("Bid placed!");
     } catch (error) {
         console.error("Error placing bid:", error);
+        alert("Wystąpił błąd podczas składania oferty: " + error.message);
     }
 }
 
+// Definicje withdrawFunds i endAuction (przykładowe)
 async function withdrawFunds() {
     console.log("withdrawFunds function called");
     if (!signer) {
@@ -271,6 +68,7 @@ async function withdrawFunds() {
         console.log("Funds withdrawn!");
     } catch (error) {
         console.error("Error withdrawing funds:", error);
+        alert("Wystąpił błąd podczas wypłaty środków: " + error.message);
     }
 }
 
@@ -288,6 +86,7 @@ async function endAuction() {
         console.log("Auction ended!");
     } catch (error) {
         console.error("Error ending auction:", error);
+        alert("Wystąpił błąd podczas zakończenia aukcji: " + error.message);
     }
 }
 
