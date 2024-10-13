@@ -15,6 +15,18 @@
     <button id="endAuctionButton">Zakończ aukcję</button>
 
     <script>
+        // Upewnij się, że te funkcje są dostępne
+        async function requestAccount() {
+            if (typeof window.ethereum !== 'undefined') {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                console.log("Connected to MetaMask");
+                signer = provider.getSigner(); // Ustaw signer po połączeniu
+            } else {
+                alert("Proszę zainstalować MetaMask!");
+            }
+        }
+
+        // Przykład implementacji placeBid, withdrawFunds i endAuction (musisz mieć je zaimplementowane w chz.js)
         document.getElementById('connectButton').onclick = requestAccount;
         document.getElementById('placeBidButton').onclick = placeBid;
         document.getElementById('withdrawButton').onclick = withdrawFunds;
